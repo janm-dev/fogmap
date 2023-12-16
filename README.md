@@ -44,6 +44,7 @@ This information can be exported in the app using the export feature in the sett
 
 ## Attribution
 
+Idea for this project from <https://www.tumblr.com/charlottan/736737612997476352>/<https://nitter.net/aidanshandle/status/1624556578018918400> before realizing that [this already exists](https://fogofworld.app/en/).
 Icons from [Google Fonts](https://fonts.google.com/icons), used under the terms of the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## [License](./LICENSE)
