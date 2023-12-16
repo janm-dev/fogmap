@@ -1,0 +1,40 @@
+name: Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  docs:
+    name: Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/configure-pages@v2
+        id: pages
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20.x
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: install
+      - uses: borales/actions-yarn@v4
+        with:
+          cmd: build
+      - uses: actions/upload-pages-artifact@v1
+        with:
+          path: dist
+      - uses: actions/deploy-pages@v1
+        id: deployment

@@ -1,0 +1,55 @@
+:root {
+	font-size: 16px;
+	font-family:
+		Roboto,
+		"Noto Sans",
+		Helvetica,
+		-apple-system,
+		BlinkMacSystemFont,
+		"Segoe UI",
+		Arial,
+		sans-serif,
+		"Apple Color Emoji",
+		"Segoe UI Emoji";
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#map {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	cursor: default;
+}
+
+#map:active {
+	cursor: grabbing;
+}
+
+.fogmap-layer-icon {
+	margin: 0;
+	padding: 0;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 0.25rem;
+	vertical-align: middle;
+}
+
+.fogmap-layer-name {
+	vertical-align: middle;
+}
+
+.leaflet-control-layers-selector:checked ~ * > .fogmap-layer-name {
+	font-weight: bold;
+}
+
+.leaflet-control-container .leaflet-top.leaflet-right {
+	font-size: 1.2rem;
+}
