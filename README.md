@@ -42,6 +42,15 @@ This information can be exported in the app using the export feature in the sett
 - [OpenRailwayMap](https://www.openrailwaymap.org/) at `*.tiles.openrailwaymap.org`
 - [Waymarked Trails](https://waymarkedtrails.org/) at `tile.waymarkedtrails.org`
 
+## Building
+
+Requires recent versions of [yarn](https://yarnpkg.com/) and [node.js](https://nodejs.org/en).
+
+- `yarn install` to install dependencies
+- `yarn dev` to start a development server locally
+- `yarn build` to build for production
+- `yarn preview` to preview a previously-built production build
+
 ## Attribution
 
 Idea for this project from <https://www.tumblr.com/charlottan/736737612997476352>/<https://nitter.net/aidanshandle/status/1624556578018918400> before realizing that [this already exists](https://fogofworld.app/en/).
