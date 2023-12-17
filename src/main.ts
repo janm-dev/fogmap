@@ -63,6 +63,12 @@ window.onblur = () => {
 	savePoints();
 	saveSettings();
 };
+document.onvisibilitychange = () => {
+	if (document.visibilityState === "hidden") {
+		savePoints();
+		saveSettings();
+	}
+};
 setInterval(savePoints, 30000);
 
 const locationIcon = L.icon({
