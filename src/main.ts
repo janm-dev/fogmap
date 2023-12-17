@@ -109,7 +109,7 @@ L.control.zoom({ position: "topright" }).addTo(window.map);
 L.control
 	.attribution({
 		position: "bottomright",
-		prefix: `<a href="https://github.com/janm-dev/fogmap">Info and Source</a> | <a href="https://janm.dev/legal/privacy-policy">Privacy Policy</a> | Leaflet`,
+		prefix: `<a href="https://github.com/janm-dev/fogmap">Info and Source</a> | <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement">Privacy Policy</a> | Leaflet`,
 	})
 	.addTo(window.map);
 L.control
