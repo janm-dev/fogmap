@@ -23,6 +23,10 @@ This information can be exported in the app using the export feature in the sett
   - Basic information about your operating system
   - Other similar data depending on your browser's configuration
 
+#### Who is "us"?
+
+"Us" is the hosting provider used for the website, which for `fogmap.janm.dev` is [GitHub Pages](https://pages.github.com/). No data is shared with the developer.
+
 ### Data that your browser / device sends to others
 
 - Any data your browser sends when making an HTTP request
