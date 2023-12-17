@@ -55,7 +55,11 @@ const overlays = Object.fromEntries(
 loadSettings();
 loadPoints();
 savePoints(); // Try to save points to detect storage issues early
-window.onunload = () => {
+window.onbeforeunload = () => {
+	savePoints();
+	saveSettings();
+};
+window.onblur = () => {
 	savePoints();
 	saveSettings();
 };
