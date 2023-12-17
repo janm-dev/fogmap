@@ -1,9 +1,3 @@
-import { LitElement, html, css } from "lit";
-import { customElement } from "lit/decorators.js";
-
-const PAN_DURATION = 1;
-const PAN_LINEARITY = 0.2;
-
 /// A point in time and space
 export interface Point {
 	/// Timestamp in milliseconds since the UNIX epoch
@@ -16,54 +10,6 @@ export interface Point {
 	altitude: number | null;
 	/// Accuracy of the latitude/longitude and altitude in meters
 	accuracy: [number, number | null];
-}
-
-@customElement("fogmap-follow")
-export class FogMapFollow extends LitElement {
-	static styles = css`
-		:host {
-			background-color: #fff;
-			color: #000;
-			border-radius: 5px;
-			border: 2px solid rgba(0, 0, 0, 0.2);
-			background-clip: padding-box;
-			width: 44px;
-			height: 44px;
-			display: block;
-			text-align: default;
-			text-decoration: none;
-			margin: 10px 0 0 10px;
-			padding: 0;
-		}
-
-		.button {
-			display: block;
-			width: 44px;
-			height: 44px;
-			background-image: url(/location.svg);
-			background-position: 50% 50%;
-			background-repeat: no-repeat;
-		}
-	`;
-
-	render() {
-		return html`
-			<a
-				@click=${() => {
-					window.map.setZoom(14);
-					window.map.panTo(window.marker.getLatLng(), {
-						animate: true,
-						duration: PAN_DURATION,
-						easeLinearity: PAN_LINEARITY,
-					});
-				}}
-				class="button"
-				href="#"
-				title="Follow"
-				role="button"
-			></a>
-		`;
-	}
 }
 
 export const geoToPoint = (pos: GeolocationPosition): Point => {
@@ -83,8 +29,9 @@ export const pointsToLatLng = (points: Point[]): [number, number][] => {
 export const savePoints = () => {
 	try {
 		localStorage.setItem("points", JSON.stringify(window.points));
+		console.info("points saved");
 	} catch (e) {
-		alert(`Error while storing points: ${e}`);
+		alert(`Error while saving points: ${e}`);
 	}
 };
 
@@ -100,7 +47,72 @@ export const loadPoints = () => {
 			accuracy: [0, null],
 		});
 	}
+
+	console.info("points loaded");
 };
+
+const DEFAULT_SETTINGS: AppSettings = {
+	startPosition: { lat: 0, lon: 0, zoom: 3 },
+};
+
+export const saveSettings = () => {
+	try {
+		localStorage.setItem("settings", JSON.stringify(window.settings));
+		console.info("settings saved");
+	} catch (e) {
+		alert(`Error while saving settings: ${e}`);
+	}
+};
+
+export const loadSettings = () => {
+	window.settings = {
+		...DEFAULT_SETTINGS,
+		...JSON.parse(localStorage.getItem("settings") || "{}"),
+	};
+
+	console.info("settings loaded");
+};
+
+export const exportData = () => {
+	const data = JSON.stringify(
+		{
+			settings: window.settings,
+			points: window.points,
+		},
+		null,
+		"\t"
+	);
+
+	const blob = new Blob([data], { type: "application/json" });
+
+	window.open(URL.createObjectURL(blob));
+
+	console.info("data exported");
+};
+
+export const importData = (blob: Blob) => {
+	try {
+		blob
+			.text()
+			.then((data) => {
+				const { settings, points } = JSON.parse(data);
+				window.settings = settings;
+				saveSettings();
+				window.points = points;
+				savePoints();
+			})
+			.then(() => {
+				console.info("data imported");
+				window.location.reload();
+			});
+	} catch (e) {
+		alert(`Error importing data: ${e}`);
+	}
+};
+
+export interface AppSettings {
+	startPosition: { lat: number; lon: number; zoom: number };
+}
 
 declare global {
 	interface Window {
@@ -109,5 +121,6 @@ declare global {
 		fogLayer: L.GeoJSON;
 		marker: L.Marker;
 		points: Point[];
+		settings: AppSettings;
 	}
 }

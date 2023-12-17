@@ -4,22 +4,19 @@ import layers from "./layers.json";
 import L from "leaflet";
 import * as turf from "@turf/turf";
 
-import { loadPoints, savePoints, geoToPoint, pointsToLatLng } from "./misc.ts";
+import {
+	loadPoints,
+	savePoints,
+	loadSettings,
+	saveSettings,
+	geoToPoint,
+	pointsToLatLng,
+} from "./misc.ts";
+import { Follow, Settings } from "./elements.ts";
 import "./misc.ts";
+import "./elements.ts";
 
 const FOG_RADIUS = 0.5;
-
-const Follow = L.Control.extend({
-	options: {
-		position: "topleft",
-	},
-
-	onAdd(_map: L.Map): HTMLElement {
-		return L.DomUtil.create("fogmap-follow");
-	},
-
-	onRemove(_map: L.Map) {},
-});
 
 const maps = Object.fromEntries(
 	layers.maps.map((l) => [
@@ -55,9 +52,13 @@ const overlays = Object.fromEntries(
 	])
 );
 
+loadSettings();
 loadPoints();
 savePoints(); // Try to save points to detect storage issues early
-window.onunload = savePoints;
+window.onunload = () => {
+	savePoints();
+	saveSettings();
+};
 setInterval(savePoints, 30000);
 
 const locationIcon = L.icon({
@@ -75,8 +76,11 @@ window.fog = pointsToLatLng(window.points)
 	.reduce(turf.union);
 
 window.map = L.map("map", {
-	center: [0, 0],
-	zoom: 2,
+	center: [
+		window.settings.startPosition.lat,
+		window.settings.startPosition.lon,
+	],
+	zoom: window.settings.startPosition.zoom,
 	layers: [Object.values(maps)[0]],
 	zoomControl: false,
 	doubleClickZoom: false,
@@ -97,14 +101,18 @@ window.fogLayer = L.geoJSON([turf.mask(window.fog)] as any, {
 
 window.fogLayer.addTo(window.map);
 
-window.marker = L.marker([0, 0], {
-	icon: locationIcon,
-	alt: "",
-	interactive: false,
-}).addTo(window.map);
+window.marker = L.marker(
+	[window.settings.startPosition.lat, window.settings.startPosition.lon],
+	{
+		icon: locationIcon,
+		alt: "",
+		interactive: false,
+	}
+).addTo(window.map);
 
 new Follow().addTo(window.map);
-L.control.layers(maps, overlays, { position: "topleft" }).addTo(window.map);
+new Settings().addTo(window.map);
+L.control.layers(maps, overlays, { position: "topright" }).addTo(window.map);
 L.control.zoom({ position: "topright" }).addTo(window.map);
 L.control
 	.attribution({
@@ -115,9 +123,15 @@ L.control
 L.control
 	.scale({
 		imperial: false,
-		maxWidth: 300,
+		maxWidth: 200,
 	})
 	.addTo(window.map);
+
+window.map.on("moveend", () => {
+	const { lat, lng: lon } = window.map.getCenter();
+	const zoom = window.map.getZoom();
+	window.settings.startPosition = { lat, lon, zoom };
+});
 
 navigator.geolocation.watchPosition(
 	(pos) => {
