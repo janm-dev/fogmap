@@ -20,15 +20,18 @@ const FOG_RADIUS = 0.5;
 
 const maps = Object.fromEntries(
 	layers.maps.map((l) => [
-		`<img src="${l.url.replace(/\{[rsxyz]\}/gu, (m) =>
-			(layers.icon as { [key: string]: { toString: () => string } })[
-				m
-			].toString()
+		`<img crossorigin="anonymous" referrerpolicy="origin" src="${l.url.replace(
+			/\{[rsxyz]\}/gu,
+			(m) =>
+				(layers.icon as { [key: string]: { toString: () => string } })[
+					m
+				].toString()
 		)}" class="fogmap-layer-icon" /> <span class="fogmap-layer-name">${
 			l.name
 		}</span>`,
 		L.tileLayer(l.url, {
 			crossOrigin: "anonymous",
+			referrerPolicy: "origin",
 			attribution: l.attribution,
 			noWrap: true,
 		}),
@@ -37,15 +40,18 @@ const maps = Object.fromEntries(
 
 const overlays = Object.fromEntries(
 	layers.overlays.map((l) => [
-		`<img src="${l.url.replace(/\{[rsxyz]\}/gu, (m) =>
-			(layers.icon as { [key: string]: { toString: () => string } })[
-				m
-			].toString()
+		`<img crossorigin="anonymous" referrerpolicy="origin" src="${l.url.replace(
+			/\{[rsxyz]\}/gu,
+			(m) =>
+				(layers.icon as { [key: string]: { toString: () => string } })[
+					m
+				].toString()
 		)}" class="fogmap-layer-icon" /> <span class="fogmap-layer-name">${
 			l.name
 		}</span>`,
 		L.tileLayer(l.url, {
 			crossOrigin: "anonymous",
+			referrerPolicy: "origin",
 			attribution: l.attribution,
 			noWrap: true,
 		}),
@@ -70,6 +76,27 @@ document.onvisibilitychange = () => {
 	}
 };
 setInterval(savePoints, 30000);
+
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker
+		.register("/sw.js", {
+			scope: "/",
+		})
+		.then((r) => {
+			if (r.installing) {
+				console.log("service worker installing");
+			} else if (r.waiting) {
+				console.log("service worker installed");
+			} else if (r.active) {
+				console.log("service worker active");
+			}
+		})
+		.catch((e) => console.error(`service worker registration failed: ${e}`));
+} else {
+	console.error(
+		"service worker registration failed: no service worker support"
+	);
+}
 
 const locationIcon = L.icon({
 	iconUrl: "/location.svg",

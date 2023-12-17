@@ -1,0 +1,16 @@
+{
+	"name": "FogMap",
+	"short_name": "FogMap",
+	"theme_color": "#ccc",
+	"background_color": "#999",
+	"display": "fullscreen",
+	"start_url": "/",
+	"icons": [
+		{
+			"src": "/icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		}
+	]
+}
